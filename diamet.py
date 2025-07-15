@@ -6,6 +6,8 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.patches import Patch
 
 COLUMN_NAMES = ['qseqid', 'qlen', 'length', 'sscinames', 'sskingdoms']
+OUTPUT_DIR = 'DiaMet'
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def run_megahit_and_diamond():
     fastq_file = "undetermined_reads.fastq.gz"
@@ -18,7 +20,7 @@ def run_megahit_and_diamond():
     subprocess.run(megahit_command, shell=True, check=True)
 
     # Run Diamond blastx for contigs
-    output_file = "undetermined_contigs_diamet.tsv"
+    output_file = os.path.join(OUTPUT_DIR, "undetermined_contigs_diamet.tsv")
     diamond_command = "/rv_home/iapich/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
                       f"-q contigs/final.contigs.fa -o {output_file} -f 6 qseqid qlen length sscinames sskingdoms"
     subprocess.run(diamond_command, shell=True, check=True)
@@ -36,7 +38,6 @@ def run_megahit_and_diamond():
             print(f"Removed {contigs_directory}.")
         else:
             print(f"Error: {contigs_directory} not found.")
-
     else:
         print(f"Error: {output_file} not found.")
         exit(1)
@@ -44,7 +45,9 @@ def run_megahit_and_diamond():
     print("Megahit and Diamond blastx execution completed.")
 
 def run_diamond_blastx():
-    command = "/rv_home/iapich/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd -q undetermined_reads.fastq.gz -o undetermined_reads_diamet.tsv -f 6 qseqid qlen length sscinames sskingdoms --ultra-sensitive"
+    output_file = os.path.join(OUTPUT_DIR, "undetermined_reads_diamet.tsv")
+    command = f"/rv_home/iapich/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
+              f"-q undetermined_reads.fastq.gz -o {output_file} -f 6 qseqid qlen length sscinames sskingdoms --ultra-sensitive"
     os.system(command)
 
 def remove_duplicate_rows(file_path):
@@ -69,9 +72,9 @@ def plot_column_5(file_path, total_sequences, pdf_pages):
     filtered_counts = {k: counts[k] for k in desired_order if k in counts}
     unique_entries = list(filtered_counts.keys())
     colors = custom_colors(unique_entries)
-    bars = plt.bar(range(len(unique_entries)), [filtered_counts[k] for k in unique_entries], color=colors)
     
     plt.figure(figsize=(8, 5))
+    bars = plt.bar(range(len(unique_entries)), [filtered_counts[k] for k in unique_entries], color=colors)
     plt.gca().set_axisbelow(True)
     plt.grid(which='major', axis='y', linestyle='-', linewidth=1.2, alpha=0.5)
     plt.grid(which='minor', axis='y', linestyle='-', linewidth=0.5, alpha=0.2)
@@ -101,19 +104,20 @@ def plot_column_5(file_path, total_sequences, pdf_pages):
     plt.ylim(1, counts.max() * 1.2)
     pdf_pages.savefig(bbox_inches='tight')
 
+    viral_output = os.path.join(OUTPUT_DIR, 'undetermined_reads_diamet_viral.csv')
     df[df['sskingdoms'] == 'Viruses'][['sscinames']].value_counts().reset_index().to_csv(
-        'undetermined_reads_diamet_viral.csv', index=False, header=['virus_species', 'count']
+        viral_output, index=False, header=['virus_species', 'count']
     )
 
 if __name__ == "__main__":
-    pdf_path = 'undetermined_reads_diamet.pdf'
+    pdf_path = os.path.join(OUTPUT_DIR, 'undetermined_reads_diamet.pdf')
 
     with PdfPages(pdf_path) as pdf_pages:
         run_megahit_and_diamond()
-        
+
         run_diamond_blastx()
 
-        result_file = "undetermined_reads_diamet.tsv"
+        result_file = os.path.join(OUTPUT_DIR, "undetermined_reads_diamet.tsv")
         remove_duplicate_rows(result_file)
 
         os.system("seqkit fq2fa undetermined_reads.fastq.gz > undetermined_reads.fasta")
@@ -125,4 +129,4 @@ if __name__ == "__main__":
 
         plot_column_5(result_file, total_sequences, pdf_pages)
 
-        print(f"Script executed successfully.")
+        print("Script executed successfully.")
