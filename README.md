@@ -152,7 +152,7 @@ def custom_colors(entries):
         'Eukaryota': (20/255, 54/255, 66/255),   # Dark blue
         'Bacteria': (16/255, 138/255, 140/255),  # Teal
         'Viruses': (168/255, 31/255, 27/255),    # Red
-        'Archaea': (236/255, 153/255, 41/255)     # Orange
+        'Archaea': (236/255, 153/255, 41/255)    # Orange
     }
     return [color_dict[entry] for entry in entries]
 ```
@@ -186,8 +186,8 @@ command = f"... "  # Remove --ultra-sensitive
     - Check PATH or use absolute paths in the script
 4.  **“diamet: command not found”**
     - Ensure the symbolic link was created correctly:
-      `sudo ln -s $(pwd)/diamet.py /usr/local/bin/diamet`
-    - Verify that `/usr/local/bin` is in your PATH
+      `sudo ln -s $(pwd)/diamet.py /usr/bin/diamet`
+    - Verify that `/usr/bin` is in your PATH
 
 ## Acknowledgments
 
