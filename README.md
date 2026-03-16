@@ -1,1 +1,199 @@
-<!-- README.md is generated from README.Rmd. Please edit that file --># DiaMetThis repository aims to analyze those metagenomic Illumina reads thatwere unable to be classified by[VirMet](https://github.com/medvir/VirMet)(`undetermined_reads.fastq.gz`) by aligning them on protein level using[DIAMOND](https://github.com/bbuchfink/diamond)/BLASTx.`diamet.py` analyzes all reads from `undetermined_reads.fastq.gz`- as single reads, and- as contigs created by *de novo* assembly using  [megahit](https://github.com/voutcn/megahit).### How to run1.  Enter timavo.`ssh timavo`2.  Move into the directory of the sample whose undetermined reads you    want to analyze.`cd /analysis/VirMetResults/<run>/<sample>/`3.  Run the python script.`python <path to script>/diamet.py`### InputTo run `diamet.py`, you need:- the `diamond` unix executable file which can be found  [here](https://github.com/bbuchfink/diamond);- [megahit](https://github.com/voutcn/megahit) installed on the server;- a protein database (defined in the code; we are using *swissprot*);- `undetermined_reads.fastq.gz`, which should be in the current working  directory.### Output`diamet.py` will output the following files:- `undetermined_reads_diamet.pdf` which plots taxonomic classification  distribution of all hits;- `undetermined_reads_diamet.tsv` which lists all hits and their Query  Seq - id (qseqid), Query sequence length (qlen), Alignment length  (length), Unique Subject Scientific Name (sscinames), and Unique  Subject Super Kingdom (sskingdoms);- `undetermined_reads_diamet_viral.csv` which lists only the viral hits  and their counts;- `undetermined_contigs_diamet.tsv` which lists all hits of the contigs  and their Query Seq - id (qseqid), Query sequence length  (qlen),Alignment length (length), Unique Subject Scientific Name  (sscinames), and Unique Subject Super Kingdom (sskingdoms).
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# DiaMet
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+DiaMet is a Python pipeline for taxonomic classification of undetermined
+reads from sequencing data. The pipeline assembles contigs using
+Megahit, performs protein-level classification using DIAMOND BLASTX
+against the Swiss-Prot database, and generates visualizations of the
+taxonomic distribution.
+
+## Features
+
+- **Contig assembly** with Megahit from undetermined reads
+- **Protein-level taxonomic classification** using DIAMOND BLASTX
+  against Swiss-Prot
+- **Duplicate removal** to keep only the best hit per query sequence
+- **Taxonomic visualization** with publication-ready bar plots
+- **Viral species identification** with count summaries
+- **Automatic cleanup** of intermediate files
+
+## Requirements
+
+### Dependencies
+
+- Python 3.6+
+
+- Required Python packages:
+
+  ``` bash
+  pandas
+  matplotlib
+  ```
+
+- External tools:
+
+  - [Megahit](https://github.com/voutcn/megahit)
+  - [DIAMOND](https://github.com/bbuchfink/diamond)
+  - [seqkit](https://bioinf.shenwei.me/seqkit/)
+
+### Database
+
+- Swiss-Prot database in DIAMOND format (`swissprot.dmnd`)
+
+## Installation
+
+1.  Clone this repository:
+
+    ``` bash
+    git clone https://github.com/yourusername/DiaMet.git
+    cd DiaMet
+    ```
+
+2.  Install Python dependencies:
+
+    ``` bash
+    pip install pandas matplotlib
+    ```
+
+3.  Ensure external tools are in your PATH or modify the script with the
+    correct paths:
+
+    - Megahit
+    - DIAMOND
+    - seqkit
+
+4.  Update the DIAMOND database path in the script:
+
+    ``` python
+    # Change this line to point to your Swiss-Prot database
+    diamond_command = "/path/to/your/diamond blastx -d /path/to/swissprot.dmnd ..."
+    ```
+
+5.  Make the script executable and accessible from anywhere:
+
+    ``` bash
+    chmod +x diamet.py
+    sudo ln -s $(pwd)/diamet.py /usr/local/bin/diamet
+    ```
+
+## Usage
+
+1.  Navigate to the directory containing your
+    `undetermined_reads.fastq.gz` file:
+
+    ``` bash
+    cd /path/to/your/data/directory
+    ```
+
+2.  Run the pipeline:
+
+    ``` bash
+    diamet
+    ```
+
+The script will: 1. Create a `DiaMet` output directory in your current
+working directory 2. Assemble contigs with Megahit 3. Run DIAMOND BLASTX
+on the assembled contigs 4. Run DIAMOND BLASTX on the original reads
+(ultra-sensitive mode) 5. Remove duplicate hits 6. Generate taxonomic
+classification plots 7. Create a CSV file with viral species counts 8.
+Clean up intermediate files
+
+## Output Files
+
+The script generates the following files in the `DiaMet` directory:
+
+| File                                  | Description                                                |
+|---------------------------------------|------------------------------------------------------------|
+| `undetermined_contigs_diamet.tsv`     | DIAMOND results for assembled contigs (duplicates removed) |
+| `undetermined_reads_diamet.tsv`       | DIAMOND results for original reads (duplicates removed)    |
+| `undetermined_reads_diamet.pdf`       | Taxonomic classification bar plot                          |
+| `undetermined_reads_diamet_viral.csv` | Viral species counts                                       |
+
+### Output Format Details
+
+The DIAMOND output files (TSV format) contain the following columns: -
+`qseqid`: Query sequence ID - `qlen`: Query sequence length - `length`:
+Alignment length - `sscinames`: Scientific names of subject sequences -
+`sskingdoms`: Kingdom-level taxonomic classification
+
+## Visualization
+
+The pipeline generates a publication-ready bar plot showing the
+taxonomic distribution of classified reads:
+
+- **Colors**:
+  - Eukaryota: Dark blue (#142E42)
+  - Bacteria: Teal (#108A8C)
+  - Viruses: Red (#A81F1B)
+  - Archaea: Orange (#EC9929)
+- **Features**:
+  - Log-scale y-axis for better visualization of low-abundance taxa
+  - Grid lines for easy value estimation
+  - Percentage of classified reads displayed in subtitle
+  - Legend with taxonomic groups
+  - Clean, minimal styling
+
+## Example Output
+
+## Customization
+
+### Modifying Taxa Colors
+
+To change the colors for different taxonomic groups, modify the
+`custom_colors` function:
+
+``` python
+def custom_colors(entries):
+    color_dict = {
+        'Eukaryota': (20/255, 54/255, 66/255),   # Dark blue
+        'Bacteria': (16/255, 138/255, 140/255),  # Teal
+        'Viruses': (168/255, 31/255, 27/255),    # Red
+        'Archaea': (236/255, 153/255, 41/255)     # Orange
+    }
+    return [color_dict[entry] for entry in entries]
+```
+
+### Changing DIAMOND Sensitivity
+
+The script uses `--ultra-sensitive` mode for read-level classification.
+To modify sensitivity:
+
+``` python
+# Change to faster mode
+command = f"... --sensitive"
+
+# Or to default mode
+command = f"... "  # Remove --ultra-sensitive
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1.  **“undetermined_reads.fastq.gz not found”**
+    - Ensure you’re in the correct directory containing your input file
+    - Check file name spelling
+2.  **DIAMOND database path errors**
+    - Update the database path in both `run_megahit_and_diamond()` and
+      `run_diamond_blastx()` functions
+    - Ensure the database is in DIAMOND format
+3.  **Missing external tools**
+    - Verify Megahit, DIAMOND, and seqkit are installed and accessible
+    - Check PATH or use absolute paths in the script
+4.  **“diamet: command not found”**
+    - Ensure the symbolic link was created correctly:
+      `sudo ln -s $(pwd)/diamet.py /usr/local/bin/diamet`
+    - Verify that `/usr/local/bin` is in your PATH
+
+## Acknowledgments
+
+- [Megahit](https://github.com/voutcn/megahit) for efficient contig
+  assembly
+- [DIAMOND](https://github.com/bbuchfink/diamond) for fast protein-level
+  classification
+- [seqkit](https://bioinf.shenwei.me/seqkit/) for sequence manipulation
+- Swiss-Prot database for protein sequences and annotations
