@@ -95,12 +95,16 @@ taxonomic distribution.
     diamet
     ```
 
-The script will: 1. Create a `DiaMet` output directory in your current
-working directory 2. Assemble contigs with Megahit 3. Run DIAMOND BLASTX
-on the assembled contigs 4. Run DIAMOND BLASTX on the original reads
-(ultra-sensitive mode) 5. Remove duplicate hits 6. Generate taxonomic
-classification plots 7. Create a CSV file with viral species counts 8.
-Clean up intermediate files
+The script will:
+
+1.  Create a `DiaMet` output directory in your current working directory
+2.  Assemble contigs with Megahit
+3.  Run DIAMOND BLASTX on the assembled contigs
+4.  Run DIAMOND BLASTX on the original reads (ultra-sensitive mode)
+5.  Remove duplicate hits
+6.  Generate taxonomic classification plots
+7.  Create a CSV file with viral species counts
+8.  Clean up intermediate files
 
 ## Output Files
 
@@ -115,10 +119,13 @@ The script generates the following files in the `DiaMet` directory:
 
 ### Output Format Details
 
-The DIAMOND output files (TSV format) contain the following columns: -
-`qseqid`: Query sequence ID - `qlen`: Query sequence length - `length`:
-Alignment length - `sscinames`: Scientific names of subject sequences -
-`sskingdoms`: Kingdom-level taxonomic classification
+The DIAMOND output files (TSV format) contain the following columns:
+
+- `qseqid`: Query sequence ID
+- `qlen`: Query sequence length
+- `length`: Alignment length
+- `sscinames`: Scientific names of subject sequences
+- `sskingdoms`: Kingdom-level taxonomic classification
 
 ## Visualization
 

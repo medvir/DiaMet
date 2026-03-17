@@ -94,6 +94,7 @@ DiaMet is a Python pipeline for taxonomic classification of undetermined reads f
    ```
 
 The script will:
+
 1. Create a `DiaMet` output directory in your current working directory
 2. Assemble contigs with Megahit
 3. Run DIAMOND BLASTX on the assembled contigs
@@ -117,6 +118,7 @@ The script generates the following files in the `DiaMet` directory:
 ### Output Format Details
 
 The DIAMOND output files (TSV format) contain the following columns:
+
 - `qseqid`: Query sequence ID
 - `qlen`: Query sequence length
 - `length`: Alignment length
