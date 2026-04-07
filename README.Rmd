@@ -55,7 +55,7 @@ DiaMet is a Python pipeline for taxonomic classification of undetermined reads f
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/DiaMet.git
+   git clone https://github.com/medvir/DiaMet.git
    cd DiaMet
    ```
 

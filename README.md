@@ -3,6 +3,7 @@
 # DiaMet
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 DiaMet is a Python pipeline for taxonomic classification of undetermined
@@ -49,7 +50,7 @@ taxonomic distribution.
 1.  Clone this repository:
 
     ``` bash
-    git clone https://github.com/yourusername/DiaMet.git
+    git clone https://github.com/medvir/DiaMet.git
     cd DiaMet
     ```
 
@@ -110,12 +111,12 @@ The script will:
 
 The script generates the following files in the `DiaMet` directory:
 
-| File                                  | Description                                                |
-|---------------------------------------|------------------------------------------------------------|
-| `undetermined_contigs_diamet.tsv`     | DIAMOND results for assembled contigs (duplicates removed) |
-| `undetermined_reads_diamet.tsv`       | DIAMOND results for original reads (duplicates removed)    |
-| `undetermined_reads_diamet.pdf`       | Taxonomic classification bar plot                          |
-| `undetermined_reads_diamet_viral.csv` | Viral species counts                                       |
+| File | Description |
+|----|----|
+| `undetermined_contigs_diamet.tsv` | DIAMOND results for assembled contigs (duplicates removed) |
+| `undetermined_reads_diamet.tsv` | DIAMOND results for original reads (duplicates removed) |
+| `undetermined_reads_diamet.pdf` | Taxonomic classification bar plot |
+| `undetermined_reads_diamet_viral.csv` | Viral species counts |
 
 ### Output Format Details
 
