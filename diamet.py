@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import subprocess
 import pandas as pd
@@ -21,7 +23,7 @@ def run_megahit_and_diamond():
 
     # Run Diamond blastx for contigs
     output_file = os.path.join(OUTPUT_DIR, "undetermined_contigs_diamet.tsv")
-    diamond_command = "/rv_home/iapich/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
+    diamond_command = "/analyses/Repositories/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
                       f"-q contigs/final.contigs.fa -o {output_file} -f 6 qseqid qlen length sscinames sskingdoms"
     subprocess.run(diamond_command, shell=True, check=True)
 
@@ -46,7 +48,7 @@ def run_megahit_and_diamond():
 
 def run_diamond_blastx():
     output_file = os.path.join(OUTPUT_DIR, "undetermined_reads_diamet.tsv")
-    command = f"/rv_home/iapich/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
+    command = f"/analyses/Repositories/DiaMet/diamond blastx -d /data/diamond/swissprot.dmnd " \
               f"-q undetermined_reads.fastq.gz -o {output_file} -f 6 qseqid qlen length sscinames sskingdoms --ultra-sensitive"
     os.system(command)
 
